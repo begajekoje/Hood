@@ -5,12 +5,12 @@ import json
 import os
 
 RANK_FILE = "xo_rank.json"
-ROLE_ID = 123456789012345678  # Zamijeni sa stvarnim ID-em role
+ROLE_ID = 1319078183143870514
 
 class XOGame(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.game_channel_id = 123456789012345678  # Zamijeni sa stvarnim ID kanala
+        self.game_channel_id = 1319078639454912603
         self.players = []
         self.turn = 0
         self.board = ["⬜"] * 9
