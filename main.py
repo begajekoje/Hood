@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 import asyncio
 from ticket_tool import TicketView
+from ticket_tool import TicketView, ControlView
 
 load_dotenv()
 
@@ -47,6 +48,13 @@ async def setup_ticket(ctx):
     )
     embed.set_footer(text="Hood Team • Prati pravila i budi korektan")
     await ctx.send(embed=embed, view=TicketView())
+
+    
+@bot.event
+async def on_ready():
+    bot.add_view(TicketView())  # za dropdown
+    print(f"{bot.user} je aktivan i dropdown radi ✅")
+
        
 
 
