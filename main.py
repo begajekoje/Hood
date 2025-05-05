@@ -3,6 +3,7 @@ from discord.ext import commands
 import os
 from dotenv import load_dotenv
 import asyncio
+from ticket_tool import TicketView
 
 load_dotenv()
 
@@ -35,6 +36,18 @@ async def on_command_error(ctx, error):
 
     else:
         await ctx.send(f"⚠️ Došlo je do greške: {str(error)}")
+
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def setup_ticket(ctx):
+    embed = discord.Embed(
+        title="🎟️ Otvori Ticket – Hood Support",
+        description="*Dobrodošao/la u Hood Support tim.*",
+        color=discord.Color.dark_gold()
+    )
+    embed.set_footer(text="Hood Team • Prati pravila i budi korektan")
+    await ctx.send(embed=embed, view=TicketView())
+       
 
 
 # -- pokretanje bota --
