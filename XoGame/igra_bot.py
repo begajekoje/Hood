@@ -208,10 +208,11 @@ class XOButton(discord.ui.Button):
                 if winner == "draw":
                     await interaction.response.edit_message(content="*Neriješeno!*", view=self.view)
                 else:
-                    pobjednik = self.cog.players[0 if winner == "❌" else 1]
+                    pobjednik = self.cog.players[0 if winner == "Pobjednik je" else 1]
                     self.cog.update_rank(pobjednik.id)
                     await interaction.response.edit_message(
-                        content=f"{winner} ({pobjednik.mention}) *je pobjednik/ca.*",
+                        content=f"Pobjednik je {pobjednik.mention}",
+
                         view=self.view
                     )
             else:
