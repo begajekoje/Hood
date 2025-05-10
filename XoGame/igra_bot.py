@@ -147,7 +147,7 @@ class XOJoinView(discord.ui.View):
 
 class JoinButton(discord.ui.Button):
     def __init__(self, cog):
-        super().__init__(label="<:checkmark:1361650401148928100> Pridruži se", style=discord.ButtonStyle.success, custom_id="join")
+        super().__init__(label="Pridruži se", style=discord.ButtonStyle.success, custom_id="join")
         self.cog = cog
 
     async def callback(self, interaction: discord.Interaction):
