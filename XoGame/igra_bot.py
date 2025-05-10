@@ -5,7 +5,7 @@ import json
 import os
 
 RANK_FILE = "xo_rank.json"
-ROLE_ID = 1319078183143870514
+ROLE_ID = 1370765017795920115
 
 class XOGame(commands.Cog):
     def __init__(self, bot):
@@ -79,32 +79,38 @@ class XOGame(commands.Cog):
             self.board = ["⬜"] * 9
             self.game_active = False
             view = XOJoinView(self)
-            self.join_message = await channel.send(content="⚔️ **IX OX Igrica!**\nKlikni zeleno dugme da se pridružiš. Prva 2 igrača ulaze!", view=view)
+            
+            embed = discord.Embed(
+    description="**<:hood_emoji_trava:133335046062258074> IX OX Igrica!**\n<:Info:1334186844782465907> Klikni na zeleno dugme da se pridružiš.\n*Prva 2 igrača ulaze!*",
+    color=discord.Color.green()
+)
+        self.join_message = await channel.send(embed=embed, view=view)
+
 
     @commands.command()
     async def startx(self, ctx):
         if ROLE_ID not in [role.id for role in ctx.author.roles]:
-            return await ctx.send("⛔ Samo korisnici sa određenom rolom mogu pokrenuti igru.")
+            return await ctx.send("<:Warning:1362019880739537048> Nažalost nemaš permisiju za pokretanje igre!")
 
         self.players = []
         self.turn = 0
         self.board = ["⬜"] * 9
         self.game_active = False
         view = XOJoinView(self)
-        self.join_message = await ctx.send(content="⚔️ **IX OX Igrica!**\nKlikni zeleno dugme da se pridružiš. Prva 2 igrača ulaze!", view=view)
+        self.join_message = await ctx.send(content="**<:hood_emoji_trava:1333350460622508074> IX OX Hood**\n*<:Info:1334186844782465097> Klikni na zeleno dugme da se pridružiš.*\n*Prva 2 igrača igraju*", view=view)
 
     @commands.command()
     async def rank(self, ctx):
         score = self.get_rank(ctx.author.id)
-        await ctx.send(f"📊 {ctx.author.display_name}, tvoj rang: {score} pobjeda.")
+        await ctx.send(f"{ctx.author.display_name}, tvoj rank je: {score} pobjeda.")
 
     @commands.command()
     async def stopx(self, ctx):
         if ROLE_ID not in [role.id for role in ctx.author.roles]:
-            return await ctx.send("⛔ Samo korisnici sa određenom rolom mogu zaustaviti igru.")
+            return await ctx.send("<:Warning:1362019880739537048> Nažalost nemaš permisiju za stopiranje igre!")
 
         if not self.game_active:
-            return await ctx.send("⚠️ Nema aktivne igre za zaustaviti.")
+            return await ctx.send("<:Warning:1362019880739537048> Igra nije aktivna")
 
         self.players = []
         self.turn = 0
@@ -112,14 +118,14 @@ class XOGame(commands.Cog):
         self.game_active = False
         self.join_message = None
 
-        await ctx.send("🛑 Igra je prekinuta od strane admina.")
+        await ctx.send("<:Info:1334186844782465097> Igra je prekinuta.")
 
     @commands.command()
     async def top(self, ctx):
         top_players = self.get_top()[:10]
         if not top_players:
-            return await ctx.send("Nema podataka.")
-        message = "**🏆 Top 10 igrača:**\n"
+            return await ctx.send("<:Info:1334186844782465097> Nema podataka.")
+        message = "*Top 10:*\n"
         for i, (user_id, score) in enumerate(top_players, 1):
             user = await self.bot.fetch_user(int(user_id))
             message += f"{i}. {user.display_name}: {score} pobjeda\n"
@@ -130,7 +136,7 @@ class XOGame(commands.Cog):
     async def resetrank(self, ctx):
         with open(RANK_FILE, "w") as f:
             json.dump({}, f)
-        await ctx.send("🔁 Rang lista je resetovana!")
+        await ctx.send("<:Info:1334186844782465097> Rank lista je restartovana.")
 
 class XOJoinView(discord.ui.View):
     def __init__(self, cog):
@@ -141,25 +147,25 @@ class XOJoinView(discord.ui.View):
 
 class JoinButton(discord.ui.Button):
     def __init__(self, cog):
-        super().__init__(label="🎓 Pridruži se", style=discord.ButtonStyle.success, custom_id="join")
+        super().__init__(label="<:checkmark:1361650401148928100> Pridruži se", style=discord.ButtonStyle.success, custom_id="join")
         self.cog = cog
 
     async def callback(self, interaction: discord.Interaction):
         if not self.cog.join_message or interaction.message.id != self.cog.join_message.id:
-            return await interaction.response.send_message("⚠️ Ne možeš koristiti ovaj dugmić!", ephemeral=True)
+            return await interaction.response.send_message("<:Warning:1362019880739537048> Ne možeš koristiti to dugme.", ephemeral=True)
 
         if len(self.cog.players) >= 2:
-            return await interaction.response.send_message("⚠️ Igra je već počela!", ephemeral=True)
+            return await interaction.response.send_message("<:Info:1334186844782465097> Igra je već pokrenuta.", ephemeral=True)
 
         if interaction.user in self.cog.players:
-            return await interaction.response.send_message("✅ Već si u igri!", ephemeral=True)
+            return await interaction.response.send_message("<:Info:1334186844782465097> Već si u igri!", ephemeral=True)
 
         self.cog.players.append(interaction.user)
         await interaction.response.send_message(f"{interaction.user.mention} se pridružio!")
 
         if len(self.cog.players) == 2:
             await interaction.channel.send(
-                f"🌟 Igra počinje između {self.cog.players[0].mention} i {self.cog.players[1].mention}!"
+                f"<:Info:1334186844782465097> Igra počinje između {self.cog.players[0].mention} i {self.cog.players[1].mention}.\n Vidjet ćemo ko gubi, a ko begu ljubi..."
             )
 
             self.cog.turn = 0
@@ -168,7 +174,7 @@ class JoinButton(discord.ui.Button):
 
             view = XOGameView(self.cog)
             if self.cog.join_message:
-                await self.cog.join_message.edit(content="🔷 **IX OX Tabla**", view=view)
+                await self.cog.join_message.edit(content="*<:Info:1334186844782465097> Polje za igranje*", view=view)
 
 class XOGameView(discord.ui.View):
     def __init__(self, cog):
@@ -185,9 +191,9 @@ class XOButton(discord.ui.Button):
 
     async def callback(self, interaction: discord.Interaction):
         if not self.cog.game_active:
-            return await interaction.response.send_message("❌ Igra nije aktivna.", ephemeral=True)
+            return await interaction.response.send_message("<:Warning:1362019880739537048> Igra nije aktivna.", ephemeral=True)
         if interaction.user != self.cog.players[self.cog.turn % 2]:
-            return await interaction.response.send_message("⏳ Nije tvoj red.", ephemeral=True)
+            return await interaction.response.send_message("<:Warning:1362019880739537048> Čekaj svoj red.", ephemeral=True)
 
         symbol = "❌" if self.cog.turn % 2 == 0 else "⭕"
         if self.cog.make_move(self.index, symbol):
@@ -200,18 +206,18 @@ class XOButton(discord.ui.Button):
             if winner:
                 self.cog.game_active = False
                 if winner == "draw":
-                    await interaction.response.edit_message(content="🤝 Neriješeno!", view=self.view)
+                    await interaction.response.edit_message(content="*Neriješeno!*", view=self.view)
                 else:
                     pobjednik = self.cog.players[0 if winner == "❌" else 1]
                     self.cog.update_rank(pobjednik.id)
                     await interaction.response.edit_message(
-                        content=f"🏆 {winner} pobjeđuje! ({pobjednik.mention})",
+                        content=f"{winner} ({pobjednik.mention}) *je pobjednik/ca.*",
                         view=self.view
                     )
             else:
                 await interaction.response.edit_message(view=self.view)
         else:
-            await interaction.response.send_message("⛔ Polje je već zauzeto.", ephemeral=True)
+            await interaction.response.send_message("<:Warning:1362019880739537048> Polje je zauzeto.", ephemeral=True)
 
 async def setup(bot):
     cog = XOGame(bot)

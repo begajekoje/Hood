@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # 🔁 ID-jevi iz .env fajla
-LOG_CHANNEL_ID = int(os.getenv("LOG_CHANNEL_ID"))
+LOG_CHANNEL_ID_TICKET = int(os.getenv("LOG_CHANNEL_ID_TICKET"))
 STAFF_SEF_ROLE_ID = int(os.getenv("STAFF_SEF_ROLE_ID"))
 TICKET_CATEGORY_ID = int(os.getenv("TICKET_CATEGORY_ID"))
 
@@ -53,7 +53,7 @@ class ConfirmCloseModal(discord.ui.Modal, title="Zatvori Tiket?"):
         self.channel = channel
 
     async def on_submit(self, interaction: discord.Interaction):
-        log_channel = interaction.guild.get_channel(LOG_CHANNEL_ID)
+        log_channel = interaction.guild.get_channel(LOG_CHANNEL_ID_TICKET)
         transcript_file = await create_pdf_transcript(self.channel)
 
         if log_channel:
