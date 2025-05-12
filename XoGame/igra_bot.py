@@ -81,7 +81,7 @@ class XOGame(commands.Cog):
             view = XOJoinView(self)
             
             embed = discord.Embed(
-    description="**<:hood_emoji_trava:133335046062258074> IX OX Igrica!**\n<:Info:1334186844782465907> Klikni na zeleno dugme da se pridružiš.\n*Prva 2 igrača ulaze!*",
+    description="**<:hood_emoji_trava:1333350460622508074> IX OX Hood**\n<:Info:1334186844782465097> Klikni na zeleno dugme da se pridružiš.\n*Prva 2 igrača ulaze!*",
     color=discord.Color.green()
 )
         self.join_message = await channel.send(embed=embed, view=view)
@@ -212,7 +212,7 @@ class XOButton(discord.ui.Button):
                     self.cog.update_rank(pobjednik.id)
                     await interaction.response.edit_message(
                         content=f"Pobjednik je {pobjednik.mention}",
-                        
+
                         view=self.view
                     )
             else:
