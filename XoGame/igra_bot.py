@@ -202,7 +202,7 @@ class XOButton(discord.ui.Button):
             self.disabled = True
             self.cog.turn += 1
 
-            winner = self.cog.check_winner()
+        winner = self.cog.check_winner()
         if winner:
             self.cog.game_active = False
         if winner == "draw":
@@ -213,13 +213,17 @@ class XOButton(discord.ui.Button):
             elif winner == "⭕":
                 pobjednik = self.cog.players[1]
             else:
-                pobjednik = None 
+                pobjednik = None
 
-            self.cog.update_rank(pobjednik.id)
-            await interaction.response.edit_message(
-                content=f"Pobjednik je {pobjednik.mention}",
-                view=self.view
-            )
+            if pobjednik:
+                self.cog.update_rank(pobjednik.id)
+                await interaction.response.edit_message(
+                    content=f"Pobjednik je {pobjednik.mention} (igrao je {winner})",
+                    view=self.view
+                )
+            else:
+                await interaction.response.edit_message(view=self.view)
+
 
 
 
