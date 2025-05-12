@@ -202,23 +202,25 @@ class XOButton(discord.ui.Button):
             self.disabled = True
             self.cog.turn += 1
 
-            winner = self.cog.check_winner()
-            if winner:
-                self.cog.game_active = False
-                if winner == "draw":
-                    await interaction.response.edit_message(content="*Neriješeno!*", view=self.view)
-                else:
-                    pobjednik = self.cog.players[0] if winner == "X" else self.cog.players[1]
-                    self.cog.update_rank(pobjednik.id)
-                    await interaction.response.edit_message(
-                        content=f"Pobjednik je {pobjednik.mention}",
-
-                        view=self.view
-                    )
+        winner = self.cog.check_winner()
+        if winner:
+            self.cog.game_active = False
+            if winner == "draw":
+                await interaction.response.edit_message(content="*Neriješeno!*", view=self.view)
             else:
-                await interaction.response.edit_message(view=self.view)
+                if winner == "X":
+                    pobjednik = self.cog.players[0]
+                else:
+                    pobjednik = self.cog.players[1]
+
+                self.cog.update_rank(pobjednik.id)
+                await interaction.response.edit_message(
+                    content=f"Pobjednik je {pobjednik.mention}",
+                    view=self.view
+                )
         else:
-            await interaction.response.send_message("<:Warning:1362019880739537048> Polje je zauzeto.", ephemeral=True)
+            await interaction.response.edit_message(view=self.view)
+
 
 async def setup(bot):
     cog = XOGame(bot)
